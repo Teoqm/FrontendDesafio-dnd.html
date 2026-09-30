@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <!-- 
+    Para que funcione en celular 
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi semana de estudio</title>
+
+    <!--
+        SORTABLEJS
+        Libreria que permite hacer Drag & Drop facilmente.
+
+        IMPORTANTE:
+        Este script debe cargarse ANTES de nuestro JavaScript,
+        porque nuestro codigo utiliza "Sortable".
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+    <link rel="stylesheet" href="desafio-dn.css">
+
+</head>
+
+
+<body>
+
+    <h1 class="titulo"> El planeador de la semana</h1>
+
+
+    <!--
+        ==================================================
+        TABLERO PRINCIPAL
+        ==================================================
+    -->
+
+    <div class="tablero">
+
+
+        <!-- =============================================
+             BANCO DE ACTIVIDADES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>Actividades</h3>
+
+            <!--
+                IMPORTANTE:
+
+                Esta es una lista HTML.
+
+                <ul> = unordered list
+                <li> = list item
+
+                El id "banco" nos permite encontrar
+                esta lista desde JavaScript:
+
+                document.getElementById("banco")
+            -->
+
+            <ul class="lista" id="banco">
+
+                <!--
+                    data-horas es un atributo personalizado.
+
+                    JavaScript puede leerlo mediante:
+
+                    actividad.dataset.horas
+                -->
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                     Caluclo Vercotorial(2 h)
+                </li>
+
+                <li data-horas="1">
+                    <span class="asa">⠿</span>
+                    Base de Datos (1 h)
+                </li>
+
+                <li data-horas="3">
+                    <span class="asa">⠿</span>
+                    Estructura de datos  (3 h)
+                </li>
+
+                <li data-horas="3">
+                    <span class="asa">⠿</span>
+                    Paradigmas De Lenguaje (3 h)
+                </li>
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                    Ingeneria Software II (2 h)
+                </li>
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                    Ecuciones Diferecial (2 h)
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- =============================================
+             LUNES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Lunes
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="lunes">
+
+
+            </ul>
+
+        </div>
+
+
+        <!-- =============================================
+             MARTES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Martes
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="martes"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             MIERCOLES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Miercoles
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="miercoles"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             JUEVES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Jueves
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="jueves"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             VIERNES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Viernes 
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="viernes"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             PAPELERA
+             ============================================= -->
+
+        <div class="papelera">
+
+            <h3>Papelera 🗑️ </h3>
+
+            <ul class="Papelera" id="papelera"></ul>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+         ================================================== -->
+
+    <script src="desafio-dn.js">
+
+
+    </script>
+
+</body>
+
+</html>

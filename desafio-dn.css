@@ -1,0 +1,214 @@
+
+
+    /* ================================
+       ESTILOS GENERALES
+    ================================ */
+
+    body {
+            font-family: sans-serif;
+            background: #1B2A41;
+            padding: 20px;
+        }
+
+        .titulo {
+        color: #FFFFFF;
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+        
+
+        /* ================================
+           TABLERO
+           ================================ */
+
+        /*
+            display: flex permite poner las columnas
+            una al lado de otra.
+        */
+
+        .tablero {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+
+        /* ================================
+           COLUMNAS
+           ================================ */
+
+        .columna {
+            background: #5ca2a0e7;
+            color: #FFFFFF;
+            border-radius: 8px;
+            padding: 10px;
+            width: 250px;
+            
+
+            /*
+                Transicion para que el cambio de color
+                cuando una columna se sobrecarga
+                sea mas suave.
+            */
+
+            transition: 0.3s;
+        }
+
+        .columna h3 {
+            margin: 0 0 12px;
+            font-size: 1rem;
+        }
+
+
+        /* ================================
+           LISTAS
+           ================================ */
+
+        /*
+            .lista identifica TODAS las listas
+            donde vamos a trabajar con SortableJS.
+
+            Es un <ul> HTML.
+        */
+
+        .lista {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-height: 100px;
+
+            /*
+                IMPORTANTE:
+
+                Una lista vacia normalmente puede tener
+                una altura de 0.
+
+                min-height permite que exista un espacio
+                donde podamos soltar una actividad.
+            */
+
+            min-height: 100px;
+            
+            
+        }
+
+
+        /*
+            Cada actividad es un <li>.
+        */
+
+        .lista li {
+            background: rgb(216, 228, 224);
+            color: rgb(0, 0, 0);
+            padding: 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+
+            /*
+                Indica visualmente que se puede agarrar.
+            */
+
+            cursor: default;
+            min-inline-size: 25cqh;
+            font-size: 1.05rem;
+        }
+
+
+        /* ================================
+           AGARRADERA
+           ================================ */
+
+        /*
+            Solamente el elemento .asa sera utilizado
+            para comenzar el Drag & Drop.
+
+            Esto es importante para que otros elementos
+            dentro de la tarjeta no provoquen el arrastre.
+        */
+
+        .asa {
+            cursor: grab;
+            color: #999;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+
+        /* ================================
+           ANIMACION DE SORTABLEJS
+           ================================ */
+
+        /*
+            ghostClass:
+
+            Es la clase que SortableJS coloca
+            temporalmente en el lugar donde
+            quedaria el elemento.
+        */
+
+        .fantasma {
+            opacity: 0.4;
+            background: #c8e6c9;
+        }
+
+
+        /*
+            chosenClass:
+
+            Clase aplicada al elemento que estamos
+            agarrando.
+        */
+
+        .elegida {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* ================================
+           DIA SOBRECARGADO
+           ================================ */
+
+        /*
+            Esta clase se activa cuando un dia
+            supera las 4 horas.
+
+            En JavaScript utilizaremos:
+
+            classList.toggle(
+                "sobrecargado",
+                horas > 4
+            );
+        */
+
+        .sobrecargado {
+            background: #9a2828;
+        }
+
+
+        /* ================================
+            PAPELERA
+            ================================ */
+
+            .papelera {
+                background: #FF6B57;
+                color: #FFFFFF;
+
+                border-radius: 8px;
+                padding: 10px;
+                width: 220px;
+                min-height: 80px;
+
+                transition: 0.3s;
+            }
+
+
+            /*
+                Titulo de la papelera.
+            */
+
+            .papelera h3 {
+                margin: 0 0 12px;
+                font-size: 1.3rem;
+            }

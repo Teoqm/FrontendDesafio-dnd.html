@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi semana de estudio</title>
+
+    <!--
+        SORTABLEJS
+        Libreria que permite hacer Drag & Drop facilmente.
+
+        IMPORTANTE:
+        Este script debe cargarse ANTES de nuestro JavaScript,
+        porque nuestro codigo utiliza "Sortable".
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+    <style>
+
+        /* ================================
+           ESTILOS GENERALES
+           ================================ */
+
+        body {
+            font-family: sans-serif;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+
+        /* ================================
+           TABLERO
+           ================================ */
+
+        /*
+            display: flex permite poner las columnas
+            una al lado de otra.
+        */
+
+        .tablero {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+
+        /* ================================
+           COLUMNAS
+           ================================ */
+
+        .columna {
+            background: #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            width: 220px;
+
+            /*
+                Transicion para que el cambio de color
+                cuando una columna se sobrecarga
+                sea mas suave.
+            */
+
+            transition: 0.3s;
+        }
+
+        .columna h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+
+
+        /* ================================
+           LISTAS
+           ================================ */
+
+        /*
+            .lista identifica TODAS las listas
+            donde vamos a trabajar con SortableJS.
+
+            Es un <ul> HTML.
+        */
+
+        .lista {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            /*
+                IMPORTANTE:
+
+                Una lista vacia normalmente puede tener
+                una altura de 0.
+
+                min-height permite que exista un espacio
+                donde podamos soltar una actividad.
+            */
+
+            min-height: 80px;
+        }
+
+
+        /*
+            Cada actividad es un <li>.
+        */
+
+        .lista li {
+            background: white;
+            padding: 10px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+
+            /*
+                Indica visualmente que se puede agarrar.
+            */
+
+            cursor: default;
+        }
+
+
+        /* ================================
+           AGARRADERA
+           ================================ */
+
+        /*
+            Solamente el elemento .asa sera utilizado
+            para comenzar el Drag & Drop.
+
+            Esto es importante para que otros elementos
+            dentro de la tarjeta no provoquen el arrastre.
+        */
+
+        .asa {
+            cursor: grab;
+            color: #999;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+
+        /* ================================
+           ANIMACION DE SORTABLEJS
+           ================================ */
+
+        /*
+            ghostClass:
+
+            Es la clase que SortableJS coloca
+            temporalmente en el lugar donde
+            quedaria el elemento.
+        */
+
+        .fantasma {
+            opacity: 0.4;
+            background: #c8e6c9;
+        }
+
+
+        /*
+            chosenClass:
+
+            Clase aplicada al elemento que estamos
+            agarrando.
+        */
+
+        .elegida {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+
+        /* ================================
+           DIA SOBRECARGADO
+           ================================ */
+
+        /*
+            Esta clase se activa cuando un dia
+            supera las 4 horas.
+
+            En JavaScript utilizaremos:
+
+            classList.toggle(
+                "sobrecargado",
+                horas > 4
+            );
+        */
+
+        .sobrecargado {
+            background: #ffb3b3;
+        }
+
+
+        /* ================================
+           PAPELERA
+           ================================ */
+
+        #papelera {
+            border: 2px dashed red;
+            min-height: 80px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <h1>Mi semana de estudio</h1>
+
+
+    <!--
+        ==================================================
+        TABLERO PRINCIPAL
+        ==================================================
+    -->
+
+    <div class="tablero">
+
+
+        <!-- =============================================
+             BANCO DE ACTIVIDADES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>Actividades</h3>
+
+            <!--
+                IMPORTANTE:
+
+                Esta es una lista HTML.
+
+                <ul> = unordered list
+                <li> = list item
+
+                El id "banco" nos permite encontrar
+                esta lista desde JavaScript:
+
+                document.getElementById("banco")
+            -->
+
+            <ul class="lista" id="banco">
+
+                <!--
+                    data-horas es un atributo personalizado.
+
+                    JavaScript puede leerlo mediante:
+
+                    actividad.dataset.horas
+                -->
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                    Repasar C++ (2 h)
+                </li>
+
+                <li data-horas="1">
+                    <span class="asa">⠿</span>
+                    Taller de frontend (1 h)
+                </li>
+
+                <li data-horas="1">
+                    <span class="asa">⠿</span>
+                    Leer de redes (1 h)
+                </li>
+
+                <li data-horas="3">
+                    <span class="asa">⠿</span>
+                    Proyecto final (3 h)
+                </li>
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                    Estudiar bases de datos (2 h)
+                </li>
+
+                <li data-horas="2">
+                    <span class="asa">⠿</span>
+                    Practicar JavaScript (2 h)
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- =============================================
+             LUNES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Lunes
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="lunes">
+
+                <!--
+                    Esta actividad es FIJA.
+
+                    La clase "fija" sera utilizada
+                    por filter para impedir que se mueva.
+                -->
+
+                <li class="fija" data-horas="2">
+
+                    <span class="asa">⠿</span>
+
+                    Clase de Redes LAN (2 h)
+
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- =============================================
+             MARTES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Martes
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="martes"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             MIERCOLES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Miercoles
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="miercoles"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             JUEVES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Jueves
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="jueves"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             VIERNES
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>
+                Viernes
+                <span class="total"></span>
+            </h3>
+
+            <ul class="lista dia" id="viernes"></ul>
+
+        </div>
+
+
+        <!-- =============================================
+             PAPELERA
+             ============================================= -->
+
+        <div class="columna">
+
+            <h3>Papelera</h3>
+
+            <ul class="lista" id="papelera"></ul>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+         ================================================== -->
+
+    <script>
+
+
+        /*
+        =====================================================
+        1. SELECCIONAR EL BANCO
+        =====================================================
+
+        getElementById() busca UN elemento.
+
+        En este caso buscamos:
+
+        <ul id="banco">
+
+        banco sera una referencia al elemento HTML.
+        */
+
+        const banco = document.getElementById("banco");
+
+
+        /*
+        =====================================================
+        2. SELECCIONAR TODAS LAS LISTAS DE LOS DIAS
+        =====================================================
+
+        querySelectorAll(".dia")
+
+        IMPORTANTE:
+
+        querySelectorAll() NO devuelve un solo elemento.
+
+        Devuelve una coleccion de elementos que
+        coinciden con el selector.
+
+        En nuestro caso:
+
+        .dia
+
+        coincide con:
+
+        #lunes
+        #martes
+        #miercoles
+        #jueves
+        #viernes
+
+        Por eso usamos:
+
+        forEach()
+
+        para recorrer cada lista.
+        */
+
+        const dias = document.querySelectorAll(".dia");
+
+
+        /*
+        =====================================================
+        3. FUNCION PARA CALCULAR LAS HORAS
+        =====================================================
+        */
+
+        function actualizarHoras() {
+
+
+            /*
+                Recorremos TODOS los dias.
+
+                dia representa una lista <ul>.
+
+                Por ejemplo:
+
+                <ul class="lista dia" id="lunes">
+
+                luego:
+
+                <ul class="lista dia" id="martes">
+
+                etc.
+            */
+
+            dias.forEach((dia) => {
+
+
+                /*
+                    Empezamos el contador en 0.
+
+                    Cada dia tiene su propio contador.
+                */
+
+                let horas = 0;
+
+
+                /*
+                =================================================
+                .children
+                =================================================
+
+                children devuelve los elementos HTML hijos
+                que existen dentro de la lista.
+
+                Por ejemplo:
+
+                <ul id="lunes">
+
+                    <li>Actividad 1</li>
+                    <li>Actividad 2</li>
+
+                </ul>
+
+                dia.children contiene los <li>.
+
+                IMPORTANTE:
+
+                children NO es un Array normal.
+
+                Pero podemos recorrerlo con for...of.
+                */
+
+                for (const actividad of dia.children) {
+
+
+                    /*
+                        dataset.horas obtiene:
+
+                        data-horas="2"
+
+                        como texto.
+
+                        Por eso usamos Number().
+
+                        "2" -> 2
+                    */
+
+                    horas += Number(actividad.dataset.horas);
+
+                }
+
+
+                /*
+                =================================================
+                MOSTRAR LAS HORAS
+                =================================================
+
+                dia.parentElement
+
+                nos lleva desde:
+
+                <ul>
+
+                hacia:
+
+                <div class="columna">
+
+                Luego:
+
+                querySelector(".total")
+
+                busca el <span> donde mostramos
+                las horas.
+                */
+
+                dia.parentElement
+                    .querySelector(".total")
+                    .textContent = `(${horas} h)`;
+
+
+                /*
+                =================================================
+                SOBRECARGA
+                =================================================
+
+                Si horas > 4:
+
+                classList.toggle(
+                    "sobrecargado",
+                    true
+                )
+
+                agrega la clase.
+
+                Si horas <= 4:
+
+                classList.toggle(
+                    "sobrecargado",
+                    false
+                )
+
+                quita la clase.
+
+                IMPORTANTE PARA EL EXAMEN:
+
+                classList permite agregar, eliminar
+                y alternar clases CSS.
+                */
+
+                dia.parentElement.classList.toggle(
+                    "sobrecargado",
+                    horas > 4
+                );
+
+            });
+
+        }
+
+
+        /*
+        =====================================================
+        4. CREAR SORTABLE PARA LOS DIAS
+        =====================================================
+
+        Recorremos todas las listas de los dias.
+
+        Cada lista recibe su propio objeto Sortable.
+        */
+
+        dias.forEach((lista) => {
+
+
+            new Sortable(lista, {
+
+
+                /*
+                =================================================
+                GROUP
+                =================================================
+
+                Todas las listas con:
+
+                group: "semana"
+
+                pueden intercambiar elementos.
+
+                Por eso una actividad puede pasar:
+
+                lunes -> martes
+                martes -> viernes
+                viernes -> lunes
+                etc.
+                */
+
+                group: "semana",
+
+
+                /*
+                Duracion de la animacion.
+                */
+
+                animation: 200,
+
+
+                /*
+                Clase visual del lugar donde caerá.
+                */
+
+                ghostClass: "fantasma",
+
+
+                /*
+                Clase visual del elemento seleccionado.
+                */
+
+                chosenClass: "elegida",
+
+
+                /*
+                =================================================
+                HANDLE
+                =================================================
+
+                Solo permite comenzar el arrastre
+                desde .asa.
+
+                En nuestro HTML tenemos:
+
+                <span class="asa">⠿</span>
+                */
+
+                handle: ".asa",
+
+
+                /*
+                =================================================
+                FILTER
+                =================================================
+
+                ".fija" significa:
+
+                Todo elemento que tenga class="fija"
+                no puede ser arrastrado.
+                */
+
+                filter: ".fija",
+
+
+                /*
+                =================================================
+                ONFILTER
+                =================================================
+
+                Se ejecuta cuando el usuario intenta
+                mover un elemento bloqueado.
+                */
+
+                onFilter: (evt) => {
+
+                    alert(
+                        "Las clases del horario no se pueden mover"
+                    );
+
+                },
+
+
+                /*
+                =================================================
+                ONEND
+                =================================================
+
+                Se ejecuta cuando termina un movimiento.
+
+                Aqui recalculamos las horas.
+
+                Esto funciona cuando:
+
+                - movemos dentro del mismo dia
+                - movemos de un dia a otro
+                */
+
+                onEnd: (evt) => {
+
+                    console.log(
+                        "Actividad:",
+                        evt.item.textContent
+                    );
+
+                    console.log(
+                        "De:",
+                        evt.from.id,
+                        "posicion:",
+                        evt.oldIndex
+                    );
+
+                    console.log(
+                        "A:",
+                        evt.to.id,
+                        "posicion:",
+                        evt.newIndex
+                    );
+
+
+                    actualizarHoras();
+
+                }
+
+            });
+
+        });
+
+
+        /*
+        =====================================================
+        5. SORTABLE DEL BANCO
+        =====================================================
+
+        El banco tiene una configuracion diferente.
+
+        ¿Por que?
+
+        Porque queremos:
+
+        BANCO
+           |
+           | copiar
+           v
+        LUNES
+
+        y que el elemento original permanezca
+        en el banco.
+        */
+
+        new Sortable(banco, {
+
+
+            /*
+            =================================================
+            GROUP COMO OBJETO
+            =================================================
+
+            name: "semana"
+
+            Es el mismo grupo que utilizan los dias.
+
+            pull: "clone"
+
+            Significa:
+
+            NO mover el elemento original.
+
+            Crear una COPIA.
+
+            put: false
+
+            Significa:
+
+            El banco NO recibe elementos provenientes
+            de otras listas.
+            */
+
+            group: {
+
+                name: "semana",
+
+                pull: "clone",
+
+                put: false
+
+            },
+
+
+            /*
+            El banco no necesita reorganizarse.
+
+            Por eso:
+
+            sort: false
+            */
+
+            sort: false,
+
+
+            animation: 200,
+
+            ghostClass: "fantasma",
+
+            chosenClass: "elegida",
+
+
+            /*
+            Solo se arrastra desde la agarradera.
+            */
+
+            handle: ".asa",
+
+
+            /*
+            Cuando una actividad se copia desde el banco
+            hacia un dia, actualizamos las horas.
+            */
+
+            onEnd: (evt) => {
+
+                actualizarHoras();
+
+            }
+
+        });
+
+
+        /*
+        =====================================================
+        6. PAPELERA
+        =====================================================
+
+        La papelera:
+
+        - Puede RECIBIR elementos.
+        - NO puede sacar elementos.
+
+        Por eso:
+
+        pull: false
+        put: true
+        */
+
+        const papelera = document.getElementById("papelera");
+
+
+        new Sortable(papelera, {
+
+            group: {
+
+                name: "semana",
+
+                /*
+                    No se pueden sacar elementos
+                    de la papelera.
+                */
+
+                pull: false,
+
+                /*
+                    Si permite recibir elementos.
+                */
+
+                put: true
+
+            },
+
+
+            /*
+            =================================================
+            ONADD
+            =================================================
+
+            onAdd se ejecuta cuando un elemento
+            entra a esta lista.
+            */
+
+            onAdd: (evt) => {
+
+
+                /*
+                    evt.item es el <li> que acaba
+                    de entrar a la papelera.
+
+                    remove() elimina ese elemento
+                    del HTML.
+                */
+
+                evt.item.remove();
+
+
+                /*
+                    Despues de eliminarlo,
+                    recalculamos las horas.
+                */
+
+                actualizarHoras();
+
+            }
+
+        });
+
+
+        /*
+        =====================================================
+        7. CALCULO INICIAL
+        =====================================================
+
+        Ejecutamos la funcion una vez al cargar
+        la pagina.
+
+        Asi lunes comienza mostrando:
+
+        (2 h)
+
+        debido a la clase fija.
+        */
+
+        actualizarHoras();
+
+
+    </script>
+
+</body>
+
+</html>
